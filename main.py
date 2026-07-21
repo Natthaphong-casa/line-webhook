@@ -2,6 +2,14 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import os
 
+from linebot.v3.messaging import (
+    Configuration,
+    ApiClient,
+    MessagingApi,
+    PushMessageRequest,
+    TextMessage,
+)
+
 app = FastAPI(
     title="Visitor Registration API",
     version="2.0.0"
