@@ -24,6 +24,9 @@ async def home():
     }
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
+if not LINE_CHANNEL_ACCESS_TOKEN:
+    raise Exception("LINE_CHANNEL_ACCESS_TOKEN is not set")
+    
 configuration = Configuration(
     access_token=LINE_CHANNEL_ACCESS_TOKEN
 )
@@ -56,25 +59,32 @@ async def webhook(request: Request):
 @app.post("/send")
 async def send(request: Request):
 
-    data = await request.json()
+    try:
+        data = await request.json()
 
-    message = data.get("message", "Hello from Visitor Registration")
+        message = data.get("message", "Hello from Visitor Registration")
 
-    with ApiClient(configuration) as api_client:
+        with ApiClient(configuration) as api_client:
 
-        line_bot_api = MessagingApi(api_client)
+            api = MessagingApi(api_client)
 
-        line_bot_api.push_message(
-            PushMessageRequest(
-                to=GROUP_ID,
-                messages=[
-                    TextMessage(
-                        text=message
-                    )
-                ]
+            api.push_message(
+                PushMessageRequest(
+                    to=GROUP_ID,
+                    messages=[
+                        TextMessage(text=message)
+                    ]
+                )
             )
-        )
 
-    return {
-        "success": True
-    }
+        return {
+            "success": True,
+            "message": "Message sent successfully"
+        }
+
+    except Exception as e:
+        print("SEND ERROR:", str(e))
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": str(e)}
+        )
