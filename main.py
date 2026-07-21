@@ -55,22 +55,21 @@ async def webhook(request: Request):
         }
     )
 
-
 @app.post("/send")
 async def send(request: Request):
-
     try:
         data = await request.json()
 
         message = data.get("message", "Hello")
 
-        print("Sending to:", GROUP_ID)
+        print("========== SEND ==========")
+        print("Group ID:", GROUP_ID)
         print("Message:", message)
 
         with ApiClient(configuration) as api_client:
             api = MessagingApi(api_client)
 
-            response = api.push_message(
+            api.push_message(
                 PushMessageRequest(
                     to=GROUP_ID,
                     messages=[
@@ -79,7 +78,7 @@ async def send(request: Request):
                 )
             )
 
-            print("LINE Response:", response)
+        print("LINE Push Success")
 
         return {
             "success": True
@@ -88,4 +87,3 @@ async def send(request: Request):
     except Exception as e:
         print("SEND ERROR:", repr(e))
         raise
-        )
