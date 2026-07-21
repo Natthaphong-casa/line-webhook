@@ -33,6 +33,8 @@ async def webhook(request: Request):
 
     body = await request.body()
 
+    print(body.decode("utf-8"))
+
     signature = request.headers.get("X-Line-Signature")
 
     try:
