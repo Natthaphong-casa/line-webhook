@@ -1,17 +1,53 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+import os
 
-app = FastAPI()
+app = FastAPI(
+    title="Visitor Registration API",
+    version="2.0.0"
+)
+
 
 @app.get("/")
-def home():
+async def home():
     return {
         "status": "Visitor Registration API Running",
-        "version": "2.0"
+        "version": "2.0.0"
     }
 
 
 @app.get("/health")
-def health():
+async def health():
     return {
         "status": "ok"
+    }
+
+
+@app.post("/webhook")
+async def webhook(request: Request):
+
+    body = await request.body()
+
+    print("========== LINE EVENT ==========")
+    print(body.decode("utf-8"))
+    print("================================")
+
+    return JSONResponse(
+        {
+            "status": "ok"
+        }
+    )
+
+
+@app.post("/send")
+async def send(request: Request):
+
+    data = await request.json()
+
+    print("========== SEND ==========")
+    print(data)
+    print("==========================")
+
+    return {
+        "success": True
     }
