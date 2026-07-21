@@ -22,7 +22,13 @@ async def home():
         "status": "Visitor Registration API Running",
         "version": "2.0.0"
     }
+LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
+configuration = Configuration(
+    access_token=LINE_CHANNEL_ACCESS_TOKEN
+)
+
+GROUP_ID = "Cc52d4603130c72260883301a5f112fc4"
 
 @app.get("/health")
 async def health():
