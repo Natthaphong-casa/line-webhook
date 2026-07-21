@@ -58,9 +58,22 @@ async def send(request: Request):
 
     data = await request.json()
 
-    print("========== SEND ==========")
-    print(data)
-    print("==========================")
+    message = data.get("message", "Hello from Visitor Registration")
+
+    with ApiClient(configuration) as api_client:
+
+        line_bot_api = MessagingApi(api_client)
+
+        line_bot_api.push_message(
+            PushMessageRequest(
+                to=GROUP_ID,
+                messages=[
+                    TextMessage(
+                        text=message
+                    )
+                ]
+            )
+        )
 
     return {
         "success": True
