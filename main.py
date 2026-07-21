@@ -62,13 +62,15 @@ async def send(request: Request):
     try:
         data = await request.json()
 
-        message = data.get("message", "Hello from Visitor Registration")
+        message = data.get("message", "Hello")
+
+        print("Sending to:", GROUP_ID)
+        print("Message:", message)
 
         with ApiClient(configuration) as api_client:
-
             api = MessagingApi(api_client)
 
-            api.push_message(
+            response = api.push_message(
                 PushMessageRequest(
                     to=GROUP_ID,
                     messages=[
@@ -77,14 +79,13 @@ async def send(request: Request):
                 )
             )
 
+            print("LINE Response:", response)
+
         return {
-            "success": True,
-            "message": "Message sent successfully"
+            "success": True
         }
 
     except Exception as e:
-        print("SEND ERROR:", str(e))
-        return JSONResponse(
-            status_code=500,
-            content={"success": False, "error": str(e)}
+        print("SEND ERROR:", repr(e))
+        raise
         )
