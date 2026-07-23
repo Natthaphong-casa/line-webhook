@@ -57,13 +57,23 @@ async def webhook(request: Request):
 
 @app.post("/send")
 async def send(request: Request):
+
     data = await request.json()
+
     message = data.get("message", "Hello")
 
-    print("========== SEND ==========")
+    # ตรวจสอบประเภทข้อความ
+    if message.startswith("📊 Visitor Summary"):
+        print("Daily Summary")
+    elif message.startswith("📢 Visitor Registration"):
+        print("Visitor Registration")
+    else:
+        print("General Message")
 
     try:
+
         with ApiClient(configuration) as api_client:
+
             api = MessagingApi(api_client)
 
             result = api.push_message(
@@ -75,11 +85,13 @@ async def send(request: Request):
                 )
             )
 
-            print("RESULT:", result)
+            print(result)
 
     except Exception as e:
+
         import traceback
         traceback.print_exc()
+
         return {
             "success": False,
             "error": str(e)
